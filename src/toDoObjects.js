@@ -49,7 +49,15 @@ class ProjectList {
     }
 
     // Adds the specified project to the list
-    static addProject(project) {
+    static addProject(newProject) {
+        let contains = false;
+        this.#Projects.forEach(project => {
+            if (project.title == newProject.title) contains = true;
+        });
+        // If contains was set, insert failed and return here
+        if (contains) return false;
+
+        // Otherwise, insert the project and reuturn the new length
         this.#Projects.push(project);
         return this.#Projects.length-1;
     }
@@ -66,16 +74,6 @@ class ProjectList {
     // Gets the project at a specified index
     static getProjectAt(index) {
         return this.#Projects[index];
-    }
-
-    // Check for duplicate project names
-    // Why does return inside of forEach not work?!!??
-    static containsProject(title) {
-        let contains = false;
-        this.#Projects.forEach(project =>{
-            if (project.title == title) contains = true;
-        })
-        return contains;
     }
 }
 
