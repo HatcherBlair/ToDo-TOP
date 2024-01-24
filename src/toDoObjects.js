@@ -33,6 +33,40 @@ class Project {
     }
 
     // Removes an item from the project
+    removeItem(item) {
+        const index = this.items.indexOf(item);
+        this.items.splice(index, 1);
+    }
 }
 
-module.exports = {Project, Item};
+// Contains the list of all projects
+// All methods are static so that it is essentially a singleton
+class ProjectList {
+    static #Projects = [];
+
+    static get projectList() {
+        return this.#Projects;
+    }
+
+    // Adds the specified project to the list
+    static addProject(project) {
+        this.#Projects.push(project);
+    }
+
+    // Removes the specified project from the list
+    static removeProject(project) {
+        // Cannot remove the 'all' project
+        if (project.title == 'all') return;
+
+        const index = this.#Projects.indexOf(project);
+        this.#Projects.splice(index, 1);
+    }
+
+    // Gets the project at a specified index
+    static getProjectAt(index) {
+        return this.#Projects[index];
+    }
+
+}
+
+module.exports = {Project, Item, ProjectList};

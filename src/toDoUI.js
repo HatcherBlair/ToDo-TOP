@@ -1,34 +1,71 @@
 const toDoObjects = require('./toDoObjects')
 
-function makePage() {
-    const testing = document.createElement('div');
+// Loads the entire page, defaults to all project
+function makePage(projectIndex = 0) {
+    makeNavBar();
+    displayProject(toDoObjects.ProjectList.getProjectAt(projectIndex));
+}
 
-    const testItem = new toDoObjects.Item('Test', 'Testing123', 'today', 5, 'No notes...');
+// Makes the NavBar that displays all current projects
+function makeNavBar() {
+    // Create and attach the list
+    const navBar = document.querySelector('.navbar');
+    const projectListDOM = document.createElement('ul');
+    navBar.appendChild(projectListDOM);
 
-    const testTitle = document.createElement('h5');
-    testTitle.textContent = testItem.title;
+    // Populate the list from the ProjectList
+    const projectList = toDoObjects.ProjectList.projectList;
+    projectList.forEach(project => {
+        const projectLI = document.createElement('li');
+        projectLI.textContent = project.title;
+        projectListDOM.appendChild(projectLI);
+    });
+}
 
-    const testDescription = document.createElement('p');
-    testDescription.textContent = testItem.description;
+// Displays the selected project on the screen
+function displayProject(project) {
+    const itemContainer = document.querySelector('.todo-display');
+    // Case where project is empty
+    if (!project.items.length) {
+        const defaultDisplay = document.createElement('div');
+        defaultDisplay.textContent = "There are no items in this project...";
+        itemContainer.appendChild(defaultDisplay);
+        return;
+    }
 
-    const testDueDate = document.createElement('p');
-    testDueDate.textContent = testItem.dueDate;
+    // Case where project is not empty
+    project.items.forEach(item => {
+        const itemCard = makeItemCard(item);
+        itemContainer.appendChild(itemCard);
+    });
+}
 
-    const testPriority = document.createElement('p');
-    testPriority.textContent = testItem.priority;
+// Makes an item card to display in the list of projects
+function makeItemCard(item) {
+    const cardContainer = document.createElement('div');
+    cardContainer.classList.add('item-card');
 
-    const testNotes = document.createElement('p');
-    testNotes.textContent = testItem.notes;
+    const itemPriortiy = document.createElement('button');
+    itemPriortiy.classList.add('item-priority-btn');
+    itemPriortiy.textContent = item.priority;
+    cardContainer.appendChild(itemPriortiy);
 
-    testing.appendChild(testTitle);
-    testing.appendChild(testDescription);
-    testing.appendChild(testDueDate);
-    testing.appendChild(testPriority);
-    testing.appendChild(testNotes);
+    const itemTitle = document.createElement('h4');
+    itemTitle.classList.add('item-title')
+    itemTitle.textContent = item.title;
+    cardContainer.appendChild(itemTitle);
 
-    const body = document.querySelector('body');
+    const itemDescription = document.createElement('p');
+    itemDescription.classList.add('item-description');
+    itemDescription.textContent = item.description;
+    cardContainer.appendChild(itemDescription);
 
-    body.appendChild(testing);
+    const itemNotes = document.createElement('p');
+    itemNotes.classList.add('item-description');
+    itemNotes.textContent = item.notes;
+    cardContainer.appendChild(itemNotes);
+
+    return cardContainer;
 }
 
 module.exports = {makePage};
