@@ -91,9 +91,11 @@ class ProjectList {
         const index = this.#Projects.findIndex(project => project.title == name);
         const result = this.#Projects[index].addItem(item);
         console.log(index);
+        console.log(result);
         // Also add to all if the current project isn't all
         if (index != 0) {
-            this.#Projects[0].addItem(item);
+            // store in second variable so function doesn't return twice
+            const i = this.#Projects[0].addItem(item);
         }
         return result;
     }

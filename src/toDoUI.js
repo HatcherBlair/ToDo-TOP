@@ -132,7 +132,7 @@ function newProjectEvent(e) {
     closeBtn.addEventListener('click', () => {
         modal.classList.add('hidden');
         overlay.classList.add('hidden');
-    });
+    }, {once: true});
 
     // Create event listener for submit button
     const submitBtn = document.querySelector('.new-project-submit');
@@ -152,12 +152,13 @@ function newProjectEvent(e) {
             // Insert successful, hide modal and display new project
             modal.classList.add('hidden');
             overlay.classList.add('hidden');
+            document.getElementById('new-project-form').reset();
             makePage(index);
         } else {
             // insert failed, display error
             alert('There is already a project with this title');
         }
-    })
+    }, {once: true})
 }
 
 function newTaskEvent(e) {
@@ -172,7 +173,7 @@ function newTaskEvent(e) {
     closeBtn.addEventListener('click', (e) => {
         modal.classList.add('hidden');
         overlay.classList.add('hidden');
-    });
+    }, {once: true});
 
     // Create even listened for submit button
     const submitBtn = document.querySelector('.new-item-submit');
@@ -193,11 +194,12 @@ function newTaskEvent(e) {
             document.querySelector('.project-title').textContent, newItem)) {
             modal.classList.add('hidden');
             overlay.classList.add('hidden');
+            document.getElementById('new-item-form').reset();
             // Making an update project funtion later
         } else {
             alert('There is already an item with this title');
         }
-    })
+    }, {once: true})
 }
 
 module.exports = {makePage};
