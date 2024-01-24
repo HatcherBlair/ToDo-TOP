@@ -1,5 +1,6 @@
 const toDoObjects = require('./toDoObjects');
 const toDoUI = require('./toDoUI');
+import './style.css';
 
 // When the page is loaded create the all project
 function runFirst() {

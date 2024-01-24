@@ -51,6 +51,7 @@ class ProjectList {
     // Adds the specified project to the list
     static addProject(project) {
         this.#Projects.push(project);
+        return this.#Projects.length-1;
     }
 
     // Removes the specified project from the list
@@ -67,6 +68,15 @@ class ProjectList {
         return this.#Projects[index];
     }
 
+    // Check for duplicate project names
+    // Why does return inside of forEach not work?!!??
+    static containsProject(title) {
+        let contains = false;
+        this.#Projects.forEach(project =>{
+            if (project.title == title) contains = true;
+        })
+        return contains;
+    }
 }
 
 module.exports = {Project, Item, ProjectList};
