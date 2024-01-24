@@ -63,6 +63,7 @@ function displayProject(project) {
     itemContainer.appendChild(projectHeader);
 
     const projectTitle = document.createElement('p');
+    projectTitle.classList.add('project-title');
     projectTitle.textContent = project.title;
     projectHeader.appendChild(projectTitle);
 
@@ -72,6 +73,7 @@ function displayProject(project) {
 
     const newItemBtn = document.createElement('button');
     newItemBtn.textContent = 'New Task';
+    newItemBtn.addEventListener('click', (e) => newTaskEvent(e));
     projectHeader.appendChild(newItemBtn);
 
     // Case where project is empty
@@ -130,7 +132,7 @@ function newProjectEvent(e) {
     closeBtn.addEventListener('click', () => {
         modal.classList.add('hidden');
         overlay.classList.add('hidden');
-    })
+    });
 
     // Create event listener for submit button
     const submitBtn = document.querySelector('.new-project-submit');
@@ -138,28 +140,64 @@ function newProjectEvent(e) {
         // Don't reload the page
         e.preventDefault();
 
-        // Get values from form and check for duplicate project
+        // Get values from form
         const projectTitle = document.getElementById('project-title').value;
         const projectDesciption = document.getElementById('project-description').value;
-        if (toDoObjects.ProjectList.containsProject(projectTitle)) {
-            alert('There is already a project with this title');
-        } else {
-            // Create the new project and add to list
-            const newProject = new toDoObjects.Project(projectTitle, projectDesciption);
-            const index = toDoObjects.ProjectList.addProject(newProject);
-
-            // Hide the modal again
+        
+        // Create new project and try to add it to the list
+        // addProject returns index if successful, false if not
+        const newProject = new toDoObjects.Project(projectTitle, projectDesciption);
+        const index = toDoObjects.ProjectList.addProject(newProject);
+        if (index) {
+            // Insert successful, hide modal and display new project
             modal.classList.add('hidden');
             overlay.classList.add('hidden');
-
-            // Update navBar and select that project
             makePage(index);
-        }  
+        } else {
+            // insert failed, display error
+            alert('There is already a project with this title');
+        }
     })
 }
 
 function newTaskEvent(e) {
+    // Show modal and overlay
+    const modal = document.querySelector('.new-item-modal');
+    const overlay = document.querySelector('.overlay');
+    modal.classList.remove('hidden');
+    overlay.classList.remove('hidden');
 
+    // Create event listened for close button
+    const closeBtn = document.querySelector('.new-item-btn-close');
+    closeBtn.addEventListener('click', (e) => {
+        modal.classList.add('hidden');
+        overlay.classList.add('hidden');
+    });
+
+    // Create even listened for submit button
+    const submitBtn = document.querySelector('.new-item-submit');
+    submitBtn.addEventListener('click', (e) => {
+        // Don't reload the page
+        e.preventDefault();
+
+        // Get values from form and make item
+        const itemTitle = document.getElementById('item-title').value;
+        const itemDescription = document.getElementById('item-description').value;
+        const tempDueDate = document.getElementById('item-due-date').value;
+        const itemDueDate = new Date(tempDueDate);
+        const itemPriortiy = document.getElementById('item-priority').value;
+        const itemNotes = document.getElementById('item-notes').value;
+        const newItem = new toDoObjects.Item(itemTitle, itemDescription, itemDueDate, itemPriortiy, itemNotes);
+        
+        if (toDoObjects.ProjectList.addItemByName(
+            document.querySelector('.project-title').textContent, newItem)) {
+            modal.classList.add('hidden');
+            overlay.classList.add('hidden');
+            // Making an update project funtion later
+        } else {
+            alert('There is already an item with this title');
+        }
+    })
 }
 
 module.exports = {makePage};

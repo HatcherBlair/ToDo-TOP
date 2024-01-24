@@ -28,8 +28,15 @@ class Project {
     }
 
     // Adds an item to the project
-    addItem(item) {
-        this.items.push(item);
+    addItem(newItem) {
+        if (this.items.find(item => item.title == newItem.title)) {
+            // Not unique, return false
+            return false;
+        } else {
+            // Unique, add to list
+            this.items.push(newItem);
+            return true;
+        }
     }
 
     // Removes an item from the project
@@ -48,18 +55,26 @@ class ProjectList {
         return this.#Projects;
     }
 
+    // Gets the project at a specified index
+    static getProjectAt(index) {
+        return this.#Projects[index];
+    }
+
+    // Gets the project with a specified name
+    static getProjectByName(name) {
+        return this.#Projects.find(project => project.title == name);
+    }
+
     // Adds the specified project to the list
     static addProject(newProject) {
-        let contains = false;
-        this.#Projects.forEach(project => {
-            if (project.title == newProject.title) contains = true;
-        });
-        // If contains was set, insert failed and return here
-        if (contains) return false;
-
-        // Otherwise, insert the project and reuturn the new length
-        this.#Projects.push(project);
-        return this.#Projects.length-1;
+        if (this.#Projects.find(project => project.title === newProject.title)) {
+            // Project is not unique, return false
+            return false;
+        } else {
+            // Return index of new object
+            this.#Projects.push(newProject);
+            return this.#Projects.length - 1;
+        }
     }
 
     // Removes the specified project from the list
@@ -68,12 +83,19 @@ class ProjectList {
         if (project.title == 'all') return;
 
         const index = this.#Projects.indexOf(project);
-        this.#Projects.splice(index, 1);
+        if (index) this.#Projects.splice(index, 1);
     }
 
-    // Gets the project at a specified index
-    static getProjectAt(index) {
-        return this.#Projects[index];
+    // Adds item to specified project by project name
+    static addItemByName(name, item) {
+        const index = this.#Projects.findIndex(project => project.title == name);
+        const result = this.#Projects[index].addItem(item);
+        console.log(index);
+        // Also add to all if the current project isn't all
+        if (index != 0) {
+            this.#Projects[0].addItem(item);
+        }
+        return result;
     }
 }
 
